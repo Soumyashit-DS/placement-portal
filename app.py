@@ -1,16 +1,10 @@
-"""
-Placement Portal - Entry Point
-================================
-Run this to start everything: python app.py
-"""
-
 import os
 from flask import Flask
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from models import db, User
 
-# ─── CREATE APP ──────────────────────────────────────────────────────
+# ─── CREATING APP ──────────────────────────────────────────────────────
 
 app = Flask(__name__, instance_relative_config=True)
 app.config['SECRET_KEY'] = 'placement-portal-secret-key'
