@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-7">
+        <h2 class="mb-4">My Profile</h2>
+        <div class="card shadow"><div class="card-body">
+            <form method="POST">{{ form.hidden_tag() }}
+                <div class="row">
+                    <div class="col-md-6 mb-3">{{ form.full_name.label(class="form-label") }}{{ form.full_name(class="form-control") }}</div>
+                    <div class="col-md-6 mb-3">{{ form.department.label(class="form-label") }}{{ form.department(class="form-control") }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">{{ form.cgpa.label(class="form-label") }}{{ form.cgpa(class="form-control", step="0.01") }}</div>
+                    <div class="col-md-4 mb-3">{{ form.phone.label(class="form-label") }}{{ form.phone(class="form-control") }}</div>
+                    <div class="col-md-4 mb-3">{{ form.graduation_year.label(class="form-label") }}{{ form.graduation_year(class="form-control") }}</div>
+                </div>
+                {{ form.submit(class="btn btn-primary") }}
+            </form>
+        </div></div>
+    </div>
+    <div class="col-md-5">
+        <h2 class="mb-4">Resume</h2>
+        <div class="card shadow"><div class="card-body">
+            {% if sp.resume_filename %}<p>Current: <a href="{{ url_for('static', filename='uploads/' + sp.resume_filename) }}" target="_blank">{{ sp.resume_filename }}</a></p>
+            {% else %}<p class="text-muted">No resume uploaded.</p>{% endif %}
+            <hr>
+            <form method="POST" action="{{ url_for('student.upload_resume') }}" enctype="multipart/form-data">{{ resume_form.hidden_tag() }}
+                <div class="mb-3">{{ resume_form.resume.label(class="form-label") }}{{ resume_form.resume(class="form-control") }}</div>
+                {{ resume_form.submit(class="btn btn-outline-primary") }}
+            </form>
+        </div></div>
+        <div class="card shadow mt-3"><div class="card-body">
+            <p><strong>Roll Number:</strong> {{ sp.roll_number }}</p>
+            <p><strong>Email:</strong> {{ current_user.email }}</p>
+        </div></div>
+    </div>
+</div>
+{% endblock %}

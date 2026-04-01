@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Welcome - Placement Portal{% endblock %}
+{% block content %}
+<div class="text-center mt-5">
+    <h1>Welcome to Placement Portal</h1>
+    <p class="lead text-muted mt-3">Connecting students with companies for campus recruitment</p>
+    <hr class="my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-4 mb-3">
+            <div class="card shadow h-100"><div class="card-body text-center">
+                <h4>Student</h4>
+                <p>Register, browse drives, apply for jobs and track your applications.</p>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Register as Student</a>
+            </div></div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card shadow h-100"><div class="card-body text-center">
+                <h4>Company</h4>
+                <p>Register your company, create placement drives and recruit students.</p>
+                <a href="{{ url_for('auth.register_company') }}" class="btn btn-success">Register as Company</a>
+            </div></div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card shadow h-100"><div class="card-body text-center">
+                <h4>Already Registered?</h4>
+                <p>Login to access your dashboard and manage your account.</p>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-dark">Login</a>
+            </div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

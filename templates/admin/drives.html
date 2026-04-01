@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Drives{% endblock %}
+{% block content %}
+<h2 class="mb-3">Placement Drives</h2>
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item"><a class="nav-link {% if tab == 'all' %}active{% endif %}" href="{{ url_for('admin.drives', tab='all') }}">All Drives</a></li>
+    <li class="nav-item"><a class="nav-link {% if tab == 'pending' %}active{% endif %}" href="{{ url_for('admin.drives', tab='pending') }}">Pending Approval</a></li>
+</ul>
+{% if items %}
+<table class="table table-striped">
+    <thead><tr><th>ID</th><th>Title</th><th>Company</th><th>Location</th><th>Package</th><th>Deadline</th><th>Status</th>
+    {% if tab == 'pending' %}<th>Actions</th>{% else %}<th>Apps</th>{% endif %}</tr></thead>
+    <tbody>{% for d in items %}<tr>
+        <td>{{ d.id }}</td><td>{{ d.title }}</td><td>{{ d.company.company_name }}</td><td>{{ d.location or '-' }}</td><td>{{ d.salary_package or '-' }}</td><td>{{ d.last_apply_date or '-' }}</td>
+        <td>{% if d.status == 'Approved' %}<span class="badge bg-success">{{ d.status }}</span>{% elif d.status == 'Pending' %}<span class="badge bg-warning">{{ d.status }}</span>{% else %}<span class="badge bg-secondary">{{ d.status }}</span>{% endif %}</td>
+        {% if tab == 'pending' %}
+        <td>
+            <form method="POST" action="{{ url_for('admin.approve_drive', id=d.id) }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-success btn-sm">Approve</button></form>
+            <form method="POST" action="{{ url_for('admin.reject_drive', id=d.id) }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-danger btn-sm">Reject</button></form>
+        </td>
+        {% else %}<td>{{ d.applications.count() }}</td>{% endif %}
+    </tr>{% endfor %}</tbody>
+</table>
+{% else %}<div class="alert alert-info">No drives found.</div>{% endif %}
+{% endblock %}

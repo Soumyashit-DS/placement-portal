@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Applications - {{ drive.title }}{% endblock %}
+{% block content %}
+<h2 class="mb-2">Applications: {{ drive.title }}</h2>
+<p class="text-muted">Total: {{ apps|length }}</p>
+{% if apps %}
+<table class="table table-striped">
+    <thead><tr><th>Student</th><th>Roll No</th><th>Dept</th><th>CGPA</th><th>Phone</th><th>Resume</th><th>Applied</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>{% for a in apps %}<tr>
+        <td>{{ a.student.full_name }}</td><td>{{ a.student.roll_number }}</td><td>{{ a.student.department }}</td><td>{{ a.student.cgpa or '-' }}</td><td>{{ a.student.phone or '-' }}</td>
+        <td>{% if a.student.resume_filename %}<a href="{{ url_for('static', filename='uploads/' + a.student.resume_filename) }}" target="_blank">View</a>{% else %}-{% endif %}</td>
+        <td>{{ a.applied_at.strftime('%Y-%m-%d') if a.applied_at else '-' }}</td>
+        <td>{% if a.status == 'Selected' %}<span class="badge bg-success">{{ a.status }}</span>{% elif a.status == 'Rejected' %}<span class="badge bg-danger">{{ a.status }}</span>{% elif a.status == 'Shortlisted' %}<span class="badge bg-info">{{ a.status }}</span>{% else %}<span class="badge bg-secondary">{{ a.status }}</span>{% endif %}</td>
+        <td>{% if a.status != 'Selected' %}
+            <form method="POST" action="{{ url_for('company.update_application', id=a.id, status='Shortlisted') }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-info btn-sm">Shortlist</button></form>
+            <form method="POST" action="{{ url_for('company.update_application', id=a.id, status='Selected') }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-success btn-sm">Select</button></form>
+            <form method="POST" action="{{ url_for('company.update_application', id=a.id, status='Rejected') }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-danger btn-sm">Reject</button></form>
+        {% endif %}</td>
+    </tr>{% endfor %}</tbody>
+</table>
+{% else %}<div class="alert alert-info">No applications yet.</div>{% endif %}
+<a href="{{ url_for('company.my_drives') }}" class="btn btn-secondary">Back</a>
+{% endblock %}

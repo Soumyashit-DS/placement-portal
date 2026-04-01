@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Placement History{% endblock %}
+{% block content %}
+<h2 class="mb-4">Placement History</h2>
+{% if placements %}
+<table class="table table-striped">
+    <thead><tr><th>Drive</th><th>Company</th><th>Location</th><th>Package</th><th>Applied</th><th>Status</th></tr></thead>
+    <tbody>{% for a in placements %}<tr>
+        <td>{{ a.drive.title }}</td><td>{{ a.drive.company.company_name }}</td><td>{{ a.drive.location or '-' }}</td><td>{{ a.drive.salary_package or '-' }}</td>
+        <td>{{ a.applied_at.strftime('%Y-%m-%d') if a.applied_at else '-' }}</td>
+        <td><span class="badge bg-success">{{ a.status }}</span></td>
+    </tr>{% endfor %}</tbody>
+</table>
+{% else %}<div class="alert alert-info">No placements yet. Keep applying!</div>{% endif %}
+{% endblock %}

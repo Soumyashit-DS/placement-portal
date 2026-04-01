@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+<div class="row mb-4">
+    <div class="col-md-3 mb-3"><div class="card text-white bg-primary shadow"><div class="card-body text-center"><h5>Students</h5><h2>{{ stats.total_students }}</h2></div></div></div>
+    <div class="col-md-3 mb-3"><div class="card text-white bg-success shadow"><div class="card-body text-center"><h5>Companies</h5><h2>{{ stats.total_companies }}</h2></div></div></div>
+    <div class="col-md-3 mb-3"><div class="card text-white bg-info shadow"><div class="card-body text-center"><h5>Drives</h5><h2>{{ stats.total_drives }}</h2></div></div></div>
+    <div class="col-md-3 mb-3"><div class="card text-white bg-secondary shadow"><div class="card-body text-center"><h5>Applications</h5><h2>{{ stats.total_applications }}</h2></div></div></div>
+</div>
+<div class="row">
+    <div class="col-md-4 mb-3"><div class="card shadow text-center"><div class="card-body"><h5>Pending Companies</h5><h3 class="text-warning">{{ stats.pending_companies }}</h3><a href="{{ url_for('admin.companies', tab='pending') }}" class="btn btn-outline-warning btn-sm">Review</a></div></div></div>
+    <div class="col-md-4 mb-3"><div class="card shadow text-center"><div class="card-body"><h5>Pending Drives</h5><h3 class="text-warning">{{ stats.pending_drives }}</h3><a href="{{ url_for('admin.drives', tab='pending') }}" class="btn btn-outline-warning btn-sm">Review</a></div></div></div>
+    <div class="col-md-4 mb-3"><div class="card shadow text-center"><div class="card-body"><h5>Selected Students</h5><h3 class="text-success">{{ stats.selected_students }}</h3></div></div></div>
+</div>
+{% endblock %}
