@@ -11,14 +11,13 @@ admin_bp = Blueprint('admin', __name__)
 def admin_required(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
-        if current_user.role != 'admin':
+        if not current_user.is_authenticated or current_user.role != 'admin':
             abort(403)
         return f(*args, **kwargs)
     return wrapped
 
 
 # ─── DASHBOARD ───────────────────────────────────────────────────────
-
 @admin_bp.route('/dashboard')
 @login_required
 @admin_required
@@ -44,7 +43,9 @@ def companies():
     tab = request.args.get('tab', 'all')   # 'all' or 'pending'
     query = request.args.get('q', '')
     if tab == 'pending':
-        items = User.query.filter_by(role='company', is_approved=False, is_active=True).all()
+        items = CompanyProfile.query.join(User).filter(
+            User.role == 'company', User.is_approved == False, User.is_active == True
+        ).all()
     elif query:
         items = CompanyProfile.query.filter(CompanyProfile.company_name.ilike(f'%{query}%')).all()
     else:
@@ -56,10 +57,11 @@ def companies():
 @login_required
 @admin_required
 def approve_company(id):
-    user = User.query.get_or_404(id)
+    user = db.get_or_404(User, id)
     user.is_approved = True
     db.session.commit()
-    flash(f'"{user.company_profile.company_name}" approved.', 'success')
+    name = user.company_profile.company_name if user.company_profile else user.username
+    flash(f'"{name}" approved.', 'success')
     return redirect(url_for('admin.companies', tab='pending'))
 
 
@@ -67,8 +69,8 @@ def approve_company(id):
 @login_required
 @admin_required
 def reject_company(id):
-    user = User.query.get_or_404(id)
-    name = user.company_profile.company_name
+    user = db.get_or_404(User, id)
+    name = user.company_profile.company_name if user.company_profile else user.username
     db.session.delete(user)
     db.session.commit()
     flash(f'"{name}" rejected.', 'info')
@@ -98,7 +100,7 @@ def students():
 @login_required
 @admin_required
 def blacklist_user(id):
-    user = User.query.get_or_404(id)
+    user = db.get_or_404(User, id)
     if user.role == 'admin':
         flash('Cannot blacklist admin.', 'danger')
         return redirect(url_for('admin.dashboard'))
@@ -128,7 +130,7 @@ def drives():
 @login_required
 @admin_required
 def approve_drive(id):
-    drive = PlacementDrive.query.get_or_404(id)
+    drive = db.get_or_404(PlacementDrive, id)
     drive.status = 'Approved'
     db.session.commit()
     flash(f'"{drive.title}" approved.', 'success')
@@ -139,7 +141,7 @@ def approve_drive(id):
 @login_required
 @admin_required
 def reject_drive(id):
-    drive = PlacementDrive.query.get_or_404(id)
+    drive = db.get_or_404(PlacementDrive, id)
     drive.status = 'Closed'
     db.session.commit()
     flash(f'"{drive.title}" rejected.', 'info')
