@@ -1,41 +1,122 @@
 {% extends 'base.html' %}
+
 {% block title %}Companies{% endblock %}
+
 {% block content %}
 <h2 class="mb-3">Companies</h2>
+
 <ul class="nav nav-tabs mb-4">
-    <li class="nav-item"><a class="nav-link {% if tab == 'all' %}active{% endif %}" href="{{ url_for('admin.companies', tab='all') }}">All Companies</a></li>
-    <li class="nav-item"><a class="nav-link {% if tab == 'pending' %}active{% endif %}" href="{{ url_for('admin.companies', tab='pending') }}">Pending Approval</a></li>
+    <li class="nav-item">
+        <a class="nav-link {% if tab == 'all' %}active{% endif %}" href="{{ url_for('admin.companies', tab='all') }}">All Companies</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if tab == 'pending' %}active{% endif %}" href="{{ url_for('admin.companies', tab='pending') }}">Pending Approval</a>
+    </li>
 </ul>
 
 {% if tab == 'all' %}
-<form method="GET" class="row mb-3"><input type="hidden" name="tab" value="all">
-    <div class="col-md-8"><input type="text" name="q" class="form-control" placeholder="Search company name" value="{{ query }}"></div>
-    <div class="col-md-4"><button class="btn btn-primary">Search</button>{% if query %} <a href="{{ url_for('admin.companies') }}" class="btn btn-secondary">Clear</a>{% endif %}</div>
-</form>
-{% if items %}
-<table class="table table-striped">
-    <thead><tr><th>ID</th><th>Company</th><th>Industry</th><th>Contact</th><th>Approval</th><th>Status</th><th>Action</th></tr></thead>
-    <tbody>{% for c in items %}<tr>
-        <td>{{ c.id }}</td><td>{{ c.company_name }}</td><td>{{ c.industry or '-' }}</td><td>{{ c.contact_person or '-' }}</td>
-        <td>{% if c.user.is_approved %}<span class="badge bg-success">Approved</span>{% else %}<span class="badge bg-warning">Pending</span>{% endif %}</td>
-        <td>{% if c.user.is_active %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-danger">Blacklisted</span>{% endif %}</td>
-        <td><form method="POST" action="{{ url_for('admin.blacklist_user', id=c.user.id) }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% if c.user.is_active %}<button class="btn btn-warning btn-sm">Deactivate</button>{% else %}<button class="btn btn-success btn-sm">Activate</button>{% endif %}</form></td>
-    </tr>{% endfor %}</tbody>
-</table>
-{% else %}<div class="alert alert-info">No companies found.</div>{% endif %}
+    <form method="GET" class="row mb-3">
+        <input type="hidden" name="tab" value="all">
+        <div class="col-md-8">
+            <input type="text" name="q" class="form-control" placeholder="Search company name" value="{{ query }}">
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-primary">Search</button>
+            {% if query %}
+                <a href="{{ url_for('admin.companies') }}" class="btn btn-secondary">Clear</a>
+            {% endif %}
+        </div>
+    </form>
+
+    {% if items %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Company</th>
+                    <th>Industry</th>
+                    <th>Contact</th>
+                    <th>Approval</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in items %}
+                    <tr>
+                        <td>{{ c.id }}</td>
+                        <td>{{ c.company_name }}</td>
+                        <td>{{ c.industry or '-' }}</td>
+                        <td>{{ c.contact_person or '-' }}</td>
+                        <td>
+                            {% if c.user.is_approved %}
+                                <span class="badge bg-success">Approved</span>
+                            {% else %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if c.user.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Blacklisted</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ url_for('admin.blacklist_user', id=c.user.id) }}" class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                {% if c.user.is_active %}
+                                    <button class="btn btn-warning btn-sm">Deactivate</button>
+                                {% else %}
+                                    <button class="btn btn-success btn-sm">Activate</button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">No companies found.</div>
+    {% endif %}
 
 {% else %}
-{% if items %}
-<table class="table table-striped">
-    <thead><tr><th>Username</th><th>Company</th><th>Industry</th><th>Contact</th><th>Email</th><th>Actions</th></tr></thead>
-    <tbody>{% for u in items %}<tr>
-        <td>{{ u.username }}</td><td>{{ u.company_profile.company_name }}</td><td>{{ u.company_profile.industry or '-' }}</td><td>{{ u.company_profile.contact_person or '-' }}</td><td>{{ u.email }}</td>
-        <td>
-            <form method="POST" action="{{ url_for('admin.approve_company', id=u.id) }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-success btn-sm">Approve</button></form>
-            <form method="POST" action="{{ url_for('admin.reject_company', id=u.id) }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-danger btn-sm">Reject</button></form>
-        </td>
-    </tr>{% endfor %}</tbody>
-</table>
-{% else %}<div class="alert alert-info">No pending companies.</div>{% endif %}
+    {% if items %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Company</th>
+                    <th>Industry</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in items %}
+                    <tr>
+                        <td>{{ u.username }}</td>
+                        <td>{{ u.company_profile.company_name }}</td>
+                        <td>{{ u.company_profile.industry or '-' }}</td>
+                        <td>{{ u.company_profile.contact_person or '-' }}</td>
+                        <td>{{ u.email }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('admin.approve_company', id=u.id) }}" class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-success btn-sm">Approve</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin.reject_company', id=u.id) }}" class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-danger btn-sm">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">No pending companies.</div>
+    {% endif %}
 {% endif %}
 {% endblock %}

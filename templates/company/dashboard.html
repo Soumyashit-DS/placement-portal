@@ -1,76 +1,198 @@
 {% extends 'base.html' %}
+
 {% block title %}Company Dashboard{% endblock %}
+
 {% block content %}
 
 {% if not approved %}
-<!-- Pending approval -->
-<div class="row justify-content-center mt-5"><div class="col-md-6 text-center"><div class="card shadow"><div class="card-body py-5">
-    <h3 class="text-warning mb-3">Account Pending Approval</h3>
-    <p class="text-muted">Your registration is under review. Features unlock after admin approval.</p>
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-secondary">Logout</a>
-</div></div></div></div>
+    <!-- =============== PENDING APPROVAL =============== -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6 text-center">
+            <div class="card shadow">
+                <div class="card-body py-5">
+                    <h3 class="text-warning mb-3">Account Pending Approval</h3>
+                    <p class="text-muted">Your registration is under review. Features unlock after admin approval.</p>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-secondary">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% elif show_profile is defined and show_profile %}
-<!-- Profile edit -->
-<div class="row justify-content-center"><div class="col-md-8">
-    <h2 class="mb-4">Company Profile</h2>
-    <div class="card shadow"><div class="card-body">
-        <form method="POST">{{ form.hidden_tag() }}
-            <div class="row">
-                <div class="col-md-6 mb-3">{{ form.company_name.label(class="form-label") }}{{ form.company_name(class="form-control") }}</div>
-                <div class="col-md-6 mb-3">{{ form.industry.label(class="form-label") }}{{ form.industry(class="form-control") }}</div>
+    <!-- =============== PROFILE EDIT =============== -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">Company Profile</h2>
+            <div class="card shadow">
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.company_name.label(class="form-label") }}
+                                {{ form.company_name(class="form-control") }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.industry.label(class="form-label") }}
+                                {{ form.industry(class="form-control") }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            {{ form.website.label(class="form-label") }}
+                            {{ form.website(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control", rows=3) }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.contact_person.label(class="form-label") }}
+                                {{ form.contact_person(class="form-control") }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.contact_phone.label(class="form-label") }}
+                                {{ form.contact_phone(class="form-control") }}
+                            </div>
+                        </div>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </form>
+                </div>
             </div>
-            <div class="mb-3">{{ form.website.label(class="form-label") }}{{ form.website(class="form-control") }}</div>
-            <div class="mb-3">{{ form.description.label(class="form-label") }}{{ form.description(class="form-control", rows=3) }}</div>
-            <div class="row">
-                <div class="col-md-6 mb-3">{{ form.contact_person.label(class="form-label") }}{{ form.contact_person(class="form-control") }}</div>
-                <div class="col-md-6 mb-3">{{ form.contact_phone.label(class="form-label") }}{{ form.contact_phone(class="form-control") }}</div>
-            </div>
-            {{ form.submit(class="btn btn-primary") }}
-        </form>
-    </div></div>
-</div></div>
+        </div>
+    </div>
 
 {% elif show_drives is defined and show_drives %}
-<!-- My drives list -->
-<div class="d-flex justify-content-between mb-4"><h2>My Drives</h2><a href="{{ url_for('company.create_drive') }}" class="btn btn-primary">Create Drive</a></div>
-{% if drives %}
-<table class="table table-striped">
-    <thead><tr><th>ID</th><th>Title</th><th>Location</th><th>Package</th><th>Deadline</th><th>Status</th><th>Apps</th><th>Actions</th></tr></thead>
-    <tbody>{% for d in drives %}<tr>
-        <td>{{ d.id }}</td><td>{{ d.title }}</td><td>{{ d.location or '-' }}</td><td>{{ d.salary_package or '-' }}</td><td>{{ d.last_apply_date or '-' }}</td>
-        <td>{% if d.status == 'Approved' %}<span class="badge bg-success">{{ d.status }}</span>{% elif d.status == 'Pending' %}<span class="badge bg-warning">{{ d.status }}</span>{% else %}<span class="badge bg-secondary">{{ d.status }}</span>{% endif %}</td>
-        <td>{{ d.applications.count() }}</td>
-        <td>
-            <a href="{{ url_for('company.applications', id=d.id) }}" class="btn btn-outline-primary btn-sm">Apps</a>
-            <a href="{{ url_for('company.edit_drive', id=d.id) }}" class="btn btn-outline-secondary btn-sm">Edit</a>
-            {% if d.status != 'Closed' %}<form method="POST" action="{{ url_for('company.close_drive', id=d.id) }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-outline-danger btn-sm">Close</button></form>{% endif %}
-            <form method="POST" action="{{ url_for('company.delete_drive', id=d.id) }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-danger btn-sm">Delete</button></form>
-        </td>
-    </tr>{% endfor %}</tbody>
-</table>
-{% else %}<div class="alert alert-info">No drives yet.</div>{% endif %}
+    <!-- =============== MY DRIVES LIST =============== -->
+    <div class="d-flex justify-content-between mb-4">
+        <h2>My Drives</h2>
+        <a href="{{ url_for('company.create_drive') }}" class="btn btn-primary">Create Drive</a>
+    </div>
+
+    {% if drives %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Location</th>
+                    <th>Package</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Apps</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in drives %}
+                    <tr>
+                        <td>{{ d.id }}</td>
+                        <td>{{ d.title }}</td>
+                        <td>{{ d.location or '-' }}</td>
+                        <td>{{ d.salary_package or '-' }}</td>
+                        <td>{{ d.last_apply_date or '-' }}</td>
+                        <td>
+                            {% if d.status == 'Approved' %}
+                                <span class="badge bg-success">{{ d.status }}</span>
+                            {% elif d.status == 'Pending' %}
+                                <span class="badge bg-warning">{{ d.status }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ d.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ d.applications.count() }}</td>
+                        <td>
+                            <a href="{{ url_for('company.applications', id=d.id) }}" class="btn btn-outline-primary btn-sm">Apps</a>
+                            <a href="{{ url_for('company.edit_drive', id=d.id) }}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                            {% if d.status != 'Closed' %}
+                                <form method="POST" action="{{ url_for('company.close_drive', id=d.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button class="btn btn-outline-danger btn-sm">Close</button>
+                                </form>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('company.delete_drive', id=d.id) }}" class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">No drives yet.</div>
+    {% endif %}
 
 {% else %}
-<!-- Dashboard stats -->
-<h2 class="mb-4">{{ profile.company_name }} - Dashboard</h2>
-<div class="row mb-4">
-    <div class="col-md-4 mb-3"><div class="card text-white bg-primary shadow"><div class="card-body text-center"><h5>Drives</h5><h2>{{ total_drives }}</h2></div></div></div>
-    <div class="col-md-4 mb-3"><div class="card text-white bg-info shadow"><div class="card-body text-center"><h5>Applications</h5><h2>{{ total_apps }}</h2></div></div></div>
-    <div class="col-md-4 mb-3"><div class="card text-white bg-success shadow"><div class="card-body text-center"><h5>Selected</h5><h2>{{ selected }}</h2></div></div></div>
-</div>
-<div class="d-flex justify-content-between mb-3"><h4>Recent Drives</h4><a href="{{ url_for('company.create_drive') }}" class="btn btn-primary">Create Drive</a></div>
-{% if drives %}
-<table class="table table-striped">
-    <thead><tr><th>Title</th><th>Status</th><th>Deadline</th><th>Apps</th><th>Action</th></tr></thead>
-    <tbody>{% for d in drives %}<tr>
-        <td>{{ d.title }}</td>
-        <td>{% if d.status == 'Approved' %}<span class="badge bg-success">{{ d.status }}</span>{% elif d.status == 'Pending' %}<span class="badge bg-warning">{{ d.status }}</span>{% else %}<span class="badge bg-secondary">{{ d.status }}</span>{% endif %}</td>
-        <td>{{ d.last_apply_date or '-' }}</td><td>{{ d.applications.count() }}</td>
-        <td><a href="{{ url_for('company.applications', id=d.id) }}" class="btn btn-outline-primary btn-sm">View Apps</a></td>
-    </tr>{% endfor %}</tbody>
-</table>
-{% else %}<div class="alert alert-info">No drives yet. <a href="{{ url_for('company.create_drive') }}">Create one</a>.</div>{% endif %}
+    <!-- =============== DASHBOARD STATS =============== -->
+    <h2 class="mb-4">{{ profile.company_name }} - Dashboard</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-primary shadow">
+                <div class="card-body text-center">
+                    <h5>Drives</h5>
+                    <h2>{{ total_drives }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-info shadow">
+                <div class="card-body text-center">
+                    <h5>Applications</h5>
+                    <h2>{{ total_apps }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-success shadow">
+                <div class="card-body text-center">
+                    <h5>Selected</h5>
+                    <h2>{{ selected }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mb-3">
+        <h4>Recent Drives</h4>
+        <a href="{{ url_for('company.create_drive') }}" class="btn btn-primary">Create Drive</a>
+    </div>
+
+    {% if drives %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Deadline</th>
+                    <th>Apps</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in drives %}
+                    <tr>
+                        <td>{{ d.title }}</td>
+                        <td>
+                            {% if d.status == 'Approved' %}
+                                <span class="badge bg-success">{{ d.status }}</span>
+                            {% elif d.status == 'Pending' %}
+                                <span class="badge bg-warning">{{ d.status }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ d.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ d.last_apply_date or '-' }}</td>
+                        <td>{{ d.applications.count() }}</td>
+                        <td><a href="{{ url_for('company.applications', id=d.id) }}" class="btn btn-outline-primary btn-sm">View Apps</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">No drives yet. <a href="{{ url_for('company.create_drive') }}">Create one</a>.</div>
+    {% endif %}
 {% endif %}
 
 {% endblock %}

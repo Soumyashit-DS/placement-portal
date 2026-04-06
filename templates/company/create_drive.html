@@ -1,26 +1,58 @@
 {% extends 'base.html' %}
+
 {% block title %}Create Drive{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center"><div class="col-md-8">
-    <h2 class="mb-4">Create Placement Drive</h2>
-    <div class="card shadow"><div class="card-body">
-        <form method="POST">{{ form.hidden_tag() }}
-            <div class="mb-3">{{ form.title.label(class="form-label") }}{{ form.title(class="form-control") }}</div>
-            <div class="mb-3">{{ form.description.label(class="form-label") }}{{ form.description(class="form-control", rows=4) }}</div>
-            <div class="row">
-                <div class="col-md-6 mb-3">{{ form.location.label(class="form-label") }}{{ form.location(class="form-control") }}</div>
-                <div class="col-md-6 mb-3">{{ form.salary_package.label(class="form-label") }}{{ form.salary_package(class="form-control", placeholder="e.g. 12 LPA") }}</div>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="mb-4">Create Placement Drive</h2>
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.title.label(class="form-label") }}
+                        {{ form.title(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows=4) }}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.location.label(class="form-label") }}
+                            {{ form.location(class="form-control", placeholder="e.g. Bangalore") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.salary_package.label(class="form-label") }}
+                            {{ form.salary_package(class="form-control", placeholder="e.g. 12 LPA") }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.eligibility_cgpa.label(class="form-label") }}
+                            {{ form.eligibility_cgpa(class="form-control", step="0.1") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.eligible_departments.label(class="form-label") }}
+                            {{ form.eligible_departments(class="form-control", placeholder="CSE, ECE or All") }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.drive_date.label(class="form-label") }}
+                            {{ form.drive_date(class="form-control", type="date") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.last_apply_date.label(class="form-label") }}
+                            {{ form.last_apply_date(class="form-control", type="date") }}
+                        </div>
+                    </div>
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('company.my_drives') }}" class="btn btn-secondary">Cancel</a>
+                </form>
             </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">{{ form.eligibility_cgpa.label(class="form-label") }}{{ form.eligibility_cgpa(class="form-control", step="0.1") }}</div>
-                <div class="col-md-6 mb-3">{{ form.eligible_departments.label(class="form-label") }}{{ form.eligible_departments(class="form-control", placeholder="CSE, ECE or All") }}</div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">{{ form.drive_date.label(class="form-label") }}{{ form.drive_date(class="form-control", type="date") }}</div>
-                <div class="col-md-6 mb-3">{{ form.last_apply_date.label(class="form-label") }}{{ form.last_apply_date(class="form-control", type="date") }}</div>
-            </div>
-            {{ form.submit(class="btn btn-primary") }} <a href="{{ url_for('company.my_drives') }}" class="btn btn-secondary">Cancel</a>
-        </form>
-    </div></div>
-</div></div>
+        </div>
+    </div>
+</div>
 {% endblock %}

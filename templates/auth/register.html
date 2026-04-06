@@ -1,45 +1,118 @@
 {% extends 'base.html' %}
+
 {% block title %}{{ type|title }} Registration{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center"><div class="col-md-6"><div class="card shadow"><div class="card-body">
-    <h3 class="text-center mb-4">{{ type|title }} Registration</h3>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="row">
-            <div class="col-md-6 mb-3">{{ form.username.label(class="form-label") }}{{ form.username(class="form-control") }}{% for e in form.username.errors %}<small class="text-danger">{{ e }}</small>{% endfor %}</div>
-            <div class="col-md-6 mb-3">{{ form.email.label(class="form-label") }}{{ form.email(class="form-control") }}{% for e in form.email.errors %}<small class="text-danger">{{ e }}</small>{% endfor %}</div>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="text-center mb-4">{{ type|title }} Registration</h3>
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.username.label(class="form-label") }}
+                            {{ form.username(class="form-control") }}
+                            {% for e in form.username.errors %}
+                                <small class="text-danger">{{ e }}</small>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control") }}
+                            {% for e in form.email.errors %}
+                                <small class="text-danger">{{ e }}</small>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control") }}
+                            {% for e in form.password.errors %}
+                                <small class="text-danger">{{ e }}</small>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.confirm_password.label(class="form-label") }}
+                            {{ form.confirm_password(class="form-control") }}
+                            {% for e in form.confirm_password.errors %}
+                                <small class="text-danger">{{ e }}</small>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    {% if type == 'student' %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.full_name.label(class="form-label") }}
+                                {{ form.full_name(class="form-control") }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.roll_number.label(class="form-label") }}
+                                {{ form.roll_number(class="form-control") }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                {{ form.department.label(class="form-label") }}
+                                {{ form.department(class="form-control") }}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {{ form.cgpa.label(class="form-label") }}
+                                {{ form.cgpa(class="form-control", step="0.01") }}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {{ form.phone.label(class="form-label") }}
+                                {{ form.phone(class="form-control") }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            {{ form.graduation_year.label(class="form-label") }}
+                            {{ form.graduation_year(class="form-control") }}
+                        </div>
+                    {% else %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.company_name.label(class="form-label") }}
+                                {{ form.company_name(class="form-control") }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.industry.label(class="form-label") }}
+                                {{ form.industry(class="form-control") }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            {{ form.website.label(class="form-label") }}
+                            {{ form.website(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control", rows=3) }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.contact_person.label(class="form-label") }}
+                                {{ form.contact_person(class="form-control") }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.contact_phone.label(class="form-label") }}
+                                {{ form.contact_phone(class="form-control") }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {{ form.submit(class="btn btn-primary w-100") }}
+                </form>
+                <hr>
+                <p class="text-center">Already registered? <a href="{{ url_for('auth.login') }}">Login</a></p>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">{{ form.password.label(class="form-label") }}{{ form.password(class="form-control") }}{% for e in form.password.errors %}<small class="text-danger">{{ e }}</small>{% endfor %}</div>
-            <div class="col-md-6 mb-3">{{ form.confirm_password.label(class="form-label") }}{{ form.confirm_password(class="form-control") }}{% for e in form.confirm_password.errors %}<small class="text-danger">{{ e }}</small>{% endfor %}</div>
-        </div>
-        <hr>
-        {% if type == 'student' %}
-        <div class="row">
-            <div class="col-md-6 mb-3">{{ form.full_name.label(class="form-label") }}{{ form.full_name(class="form-control") }}</div>
-            <div class="col-md-6 mb-3">{{ form.roll_number.label(class="form-label") }}{{ form.roll_number(class="form-control") }}</div>
-        </div>
-        <div class="row">
-            <div class="col-md-4 mb-3">{{ form.department.label(class="form-label") }}{{ form.department(class="form-control") }}</div>
-            <div class="col-md-4 mb-3">{{ form.cgpa.label(class="form-label") }}{{ form.cgpa(class="form-control", step="0.01") }}</div>
-            <div class="col-md-4 mb-3">{{ form.phone.label(class="form-label") }}{{ form.phone(class="form-control") }}</div>
-        </div>
-        <div class="mb-3">{{ form.graduation_year.label(class="form-label") }}{{ form.graduation_year(class="form-control") }}</div>
-        {% else %}
-        <div class="row">
-            <div class="col-md-6 mb-3">{{ form.company_name.label(class="form-label") }}{{ form.company_name(class="form-control") }}</div>
-            <div class="col-md-6 mb-3">{{ form.industry.label(class="form-label") }}{{ form.industry(class="form-control") }}</div>
-        </div>
-        <div class="mb-3">{{ form.website.label(class="form-label") }}{{ form.website(class="form-control") }}</div>
-        <div class="mb-3">{{ form.description.label(class="form-label") }}{{ form.description(class="form-control", rows=3) }}</div>
-        <div class="row">
-            <div class="col-md-6 mb-3">{{ form.contact_person.label(class="form-label") }}{{ form.contact_person(class="form-control") }}</div>
-            <div class="col-md-6 mb-3">{{ form.contact_phone.label(class="form-label") }}{{ form.contact_phone(class="form-control") }}</div>
-        </div>
-        {% endif %}
-        {{ form.submit(class="btn btn-primary w-100") }}
-    </form>
-    <hr>
-    <p class="text-center">Already registered? <a href="{{ url_for('auth.login') }}">Login</a></p>
-</div></div></div></div>
+    </div>
+</div>
 {% endblock %}

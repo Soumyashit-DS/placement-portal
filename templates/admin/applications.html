@@ -1,15 +1,48 @@
 {% extends 'base.html' %}
+
 {% block title %}All Applications{% endblock %}
+
 {% block content %}
 <h2 class="mb-4">All Applications</h2>
+
 {% if items %}
-<table class="table table-striped">
-    <thead><tr><th>ID</th><th>Student</th><th>Roll No</th><th>Drive</th><th>Company</th><th>Applied</th><th>Status</th></tr></thead>
-    <tbody>{% for a in items %}<tr>
-        <td>{{ a.id }}</td><td>{{ a.student.full_name }}</td><td>{{ a.student.roll_number }}</td><td>{{ a.drive.title }}</td><td>{{ a.drive.company.company_name }}</td>
-        <td>{{ a.applied_at.strftime('%Y-%m-%d') if a.applied_at else '-' }}</td>
-        <td>{% if a.status == 'Selected' %}<span class="badge bg-success">{{ a.status }}</span>{% elif a.status == 'Rejected' %}<span class="badge bg-danger">{{ a.status }}</span>{% elif a.status == 'Shortlisted' %}<span class="badge bg-info">{{ a.status }}</span>{% else %}<span class="badge bg-secondary">{{ a.status }}</span>{% endif %}</td>
-    </tr>{% endfor %}</tbody>
-</table>
-{% else %}<div class="alert alert-info">No applications.</div>{% endif %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Student</th>
+                <th>Roll No</th>
+                <th>Drive</th>
+                <th>Company</th>
+                <th>Applied</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in items %}
+                <tr>
+                    <td>{{ a.id }}</td>
+                    <td>{{ a.student.full_name }}</td>
+                    <td>{{ a.student.roll_number }}</td>
+                    <td>{{ a.drive.title }}</td>
+                    <td>{{ a.drive.company.company_name }}</td>
+                    <td>{{ a.applied_at.strftime('%Y-%m-%d') if a.applied_at else '-' }}</td>
+                    <td>
+                        {% if a.status == 'Selected' %}
+                            <span class="badge bg-success">{{ a.status }}</span>
+                        {% elif a.status == 'Rejected' %}
+                            <span class="badge bg-danger">{{ a.status }}</span>
+                        {% elif a.status == 'Shortlisted' %}
+                            <span class="badge bg-info">{{ a.status }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ a.status }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="alert alert-info">No applications.</div>
+{% endif %}
 {% endblock %}
