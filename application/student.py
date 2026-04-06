@@ -67,7 +67,7 @@ def profile():
         sp.full_name = form.full_name.data
         sp.department = form.department.data
         sp.cgpa = form.cgpa.data
-        sp.phone = form.phone.data
+        sp.phone_no = form.phone.data
         sp.graduation_year = form.graduation_year.data
         db.session.commit()
         flash('Profile updated.', 'success')

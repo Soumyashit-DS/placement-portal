@@ -22,10 +22,10 @@
             {% for a in items %}
                 <tr>
                     <td>{{ a.id }}</td>
-                    <td>{{ a.student.full_name }}</td>
-                    <td>{{ a.student.roll_number }}</td>
-                    <td>{{ a.drive.title }}</td>
-                    <td>{{ a.drive.company.company_name }}</td>
+                    <td>{{ a.student_profile.full_name }}</td>
+                    <td>{{ a.student_profile.roll_number }}</td>
+                    <td>{{ a.placement_drive.title }}</td>
+                    <td>{{ a.placement_drive.company_profile.company_name }}</td>
                     <td>{{ a.applied_at.strftime('%Y-%m-%d') if a.applied_at else '-' }}</td>
                     <td>
                         {% if a.status == 'Selected' %}

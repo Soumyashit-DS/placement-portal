@@ -27,7 +27,7 @@
                     <div class="card shadow h-100">
                         <div class="card-body">
                             <h5>{{ d.title }}</h5>
-                            <h6 class="text-muted">{{ d.company.company_name }}</h6>
+                            <h6 class="text-muted">{{ d.company_profile.company_name }}</h6>
                             {% if d.description %}
                                 <p>
                                     {{ d.description[:150] }}
@@ -63,7 +63,7 @@
             <div class="card shadow">
                 <div class="card-body">
                     <h2>{{ view_drive.title }}</h2>
-                    <h5 class="text-muted">{{ view_drive.company.company_name }}</h5>
+                    <h5 class="text-muted">{{ view_drive.company_profile.company_name }}</h5>
                     <hr>
                     {% if view_drive.description %}
                         <p>{{ view_drive.description }}</p>
@@ -114,10 +114,10 @@
             <tbody>
                 {% for a in my_apps %}
                     <tr>
-                        <td>{{ a.drive.title }}</td>
-                        <td>{{ a.drive.company.company_name }}</td>
-                        <td>{{ a.drive.location or '-' }}</td>
-                        <td>{{ a.drive.salary_package or '-' }}</td>
+                        <td>{{ a.placement_drive.title }}</td>
+                        <td>{{ a.placement_drive.company_profile.company_name }}</td>
+                        <td>{{ a.placement_drive.location or '-' }}</td>
+                        <td>{{ a.placement_drive.salary_package or '-' }}</td>
                         <td>{{ a.applied_at.strftime('%Y-%m-%d') if a.applied_at else '-' }}</td>
                         <td>
                             {% if a.status == 'Selected' %}
@@ -194,8 +194,8 @@
                     <tbody>
                         {% for a in recent_apps %}
                             <tr>
-                                <td>{{ a.drive.title }}</td>
-                                <td>{{ a.drive.company.company_name }}</td>
+                                <td>{{ a.placement_drive.title }}</td>
+                                <td>{{ a.placement_drive.company_profile.company_name }}</td>
                                 <td>
                                     {% if a.status == 'Selected' %}
                                         <span class="badge bg-success">{{ a.status }}</span>
@@ -233,7 +233,7 @@
                         {% for d in drives %}
                             <tr>
                                 <td><a href="{{ url_for('student.view_drive', id=d.id) }}">{{ d.title }}</a></td>
-                                <td>{{ d.company.company_name }}</td>
+                                <td>{{ d.company_profile.company_name }}</td>
                                 <td>{{ d.last_apply_date or '-' }}</td>
                             </tr>
                         {% endfor %}

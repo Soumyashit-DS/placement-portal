@@ -43,9 +43,7 @@ def companies():
     tab = request.args.get('tab', 'all')   # 'all' or 'pending'
     query = request.args.get('q', '')
     if tab == 'pending':
-        items = CompanyProfile.query.join(User).filter(
-            User.role == 'company', User.is_approved == False, User.is_active == True
-        ).all()
+        items = User.query.filter_by(role='company', is_approved=False, is_active=True).all()
     elif query:
         items = CompanyProfile.query.filter(CompanyProfile.company_name.ilike(f'%{query}%')).all()
     else:
@@ -88,7 +86,7 @@ def students():
         items = StudentProfile.query.filter(
             (StudentProfile.full_name.ilike(f'%{query}%')) |
             (StudentProfile.roll_number.ilike(f'%{query}%')) |
-            (StudentProfile.phone.ilike(f'%{query}%'))).all()
+            (StudentProfile.phone_no.ilike(f'%{query}%'))).all()
     else:
         items = StudentProfile.query.all()
     return render_template('admin/students.html', items=items, query=query)

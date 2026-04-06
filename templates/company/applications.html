@@ -24,14 +24,14 @@
         <tbody>
             {% for a in apps %}
                 <tr>
-                    <td>{{ a.student.full_name }}</td>
-                    <td>{{ a.student.roll_number }}</td>
-                    <td>{{ a.student.department }}</td>
-                    <td>{{ a.student.cgpa or '-' }}</td>
-                    <td>{{ a.student.phone or '-' }}</td>
+                    <td>{{ a.student_profile.full_name }}</td>
+                    <td>{{ a.student_profile.roll_number }}</td>
+                    <td>{{ a.student_profile.department }}</td>
+                    <td>{{ a.student_profile.cgpa or '-' }}</td>
+                    <td>{{ a.student_profile.phone_no or '-' }}</td>
                     <td>
-                        {% if a.student.resume_filename %}
-                            <a href="{{ url_for('static', filename='uploads/' + a.student.resume_filename) }}" target="_blank">View</a>
+                        {% if a.student_profile.resume_filename %}
+                            <a href="{{ url_for('static', filename='uploads/' + a.student_profile.resume_filename) }}" target="_blank">View</a>
                         {% else %}
                             -
                         {% endif %}

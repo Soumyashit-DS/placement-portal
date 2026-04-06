@@ -29,7 +29,7 @@ with app.app_context():
     ]:
         u = User(username=uname, email=email, role='student', is_active=True, is_approved=True)
         u.set_password('student123'); db.session.add(u); db.session.flush()
-        sp = StudentProfile(user_id=u.id, full_name=name, roll_number=roll, department=dept, cgpa=cgpa, phone=phone, graduation_year=2026)
+        sp = StudentProfile(user_id=u.id, full_name=name, roll_number=roll, department=dept, cgpa=cgpa, phone_no=phone, graduation_year=2026)
         db.session.add(sp); profiles.append(sp)
     db.session.flush()
 

@@ -101,7 +101,7 @@ def register():
         db.session.add(StudentProfile(
             user_id=user.id, full_name=form.full_name.data,
             roll_number=form.roll_number.data, department=form.department.data,
-            cgpa=form.cgpa.data, phone=form.phone.data,
+            cgpa=form.cgpa.data, phone_no=form.phone_no.data,
             graduation_year=form.graduation_year.data))
         db.session.commit()
         flash('Registration successful! Please login.', 'success')
