@@ -27,7 +27,7 @@ class StudentRegisterForm(FlaskForm):
     roll_number = StringField('Roll Number', validators=[DataRequired()])
     department = StringField('Department', validators=[DataRequired()])
     cgpa = FloatField('CGPA', validators=[Optional(), NumberRange(min=0, max=10)])
-    phone = StringField('Phone', validators=[Optional()])
+    phone_no = StringField('Phone_No', validators=[Optional()])
     graduation_year = IntegerField('Graduation Year', validators=[Optional()])
     submit = SubmitField('Register')
 

@@ -23,8 +23,8 @@ class User(UserMixin, db.Model):
     is_approved = db.Column(db.Boolean, default=False)    # Companies need admin approval
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
-    student_profile = db.relationship('StudentProfile', backref='user', uselist=False, cascade='all, delete-orphan')
-    company_profile = db.relationship('CompanyProfile', backref='user', uselist=False, cascade='all, delete-orphan')
+    student_profile = db.relationship('StudentProfile', back_populates='user', uselist=False, cascade='all, delete-orphan')
+    company_profile = db.relationship('CompanyProfile', back_populates='user', uselist=False, cascade='all, delete-orphan')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -41,11 +41,12 @@ class StudentProfile(db.Model):
     roll_number = db.Column(db.String(20), unique=True, nullable=False)
     department = db.Column(db.String(50), nullable=False)
     cgpa = db.Column(db.Float, nullable=True)
-    phone = db.Column(db.String(15), nullable=True)
+    phone_no = db.Column(db.String(15), nullable=True)
     resume_filename = db.Column(db.String(255), nullable=True)
     graduation_year = db.Column(db.Integer, nullable=True)
 
-    applications = db.relationship('Application', backref='student', lazy='dynamic')
+    user = db.relationship('User', back_populates='student_profile')
+    applications = db.relationship('Application', back_populates='student_profile', lazy='dynamic')
 
 
 class CompanyProfile(db.Model):
@@ -59,7 +60,8 @@ class CompanyProfile(db.Model):
     contact_person = db.Column(db.String(100), nullable=True)
     contact_phone = db.Column(db.String(15), nullable=True)
 
-    drives = db.relationship('PlacementDrive', backref='company', lazy='dynamic')
+    user = db.relationship('User', back_populates='company_profile')
+    drives = db.relationship('PlacementDrive', back_populates='company_profile', lazy='dynamic')
 
 
 class PlacementDrive(db.Model):
@@ -77,7 +79,8 @@ class PlacementDrive(db.Model):
     status = db.Column(db.String(20), default='Pending')  # Pending / Approved / Closed
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
-    applications = db.relationship('Application', backref='drive', lazy='dynamic')
+    company_profile = db.relationship('CompanyProfile', back_populates='drives')
+    applications = db.relationship('Application', back_populates='placement_drive', lazy='dynamic')
 
 
 class Application(db.Model):
@@ -88,6 +91,9 @@ class Application(db.Model):
     status = db.Column(db.String(20), default='Applied')  # Applied / Shortlisted / Selected / Rejected
     applied_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, onupdate=lambda: datetime.now(timezone.utc))
+
+    student_profile = db.relationship('StudentProfile', back_populates='applications')
+    placement_drive = db.relationship('PlacementDrive', back_populates='applications')
 
     __table_args__ = (
         db.UniqueConstraint('student_id', 'drive_id', name='unique_student_drive'),
