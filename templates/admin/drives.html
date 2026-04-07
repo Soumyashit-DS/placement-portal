@@ -3,14 +3,14 @@
 {% block title %}Drives{% endblock %}
 
 {% block content %}
-<h2 class="mb-3">Placement Drives</h2>
+<h2 class="mb-3"><i class="bi bi-briefcase me-2"></i>Placement Drives</h2>
 
 <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
-        <a class="nav-link {% if tab == 'all' %}active{% endif %}" href="{{ url_for('admin.drives', tab='all') }}">All Drives</a>
+        <a class="nav-link {% if tab == 'all' %}active{% endif %}" href="{{ url_for('admin.drives', tab='all') }}"><i class="bi bi-grid-fill me-1"></i>All Drives</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {% if tab == 'pending' %}active{% endif %}" href="{{ url_for('admin.drives', tab='pending') }}">Pending Approval</a>
+        <a class="nav-link {% if tab == 'pending' %}active{% endif %}" href="{{ url_for('admin.drives', tab='pending') }}"><i class="bi bi-hourglass-split me-1"></i>Pending Approval</a>
     </li>
 </ul>
 
@@ -43,22 +43,22 @@
                     <td>{{ d.last_apply_date or '-' }}</td>
                     <td>
                         {% if d.status == 'Approved' %}
-                            <span class="badge bg-success">{{ d.status }}</span>
+                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>{{ d.status }}</span>
                         {% elif d.status == 'Pending' %}
-                            <span class="badge bg-warning">{{ d.status }}</span>
+                            <span class="badge bg-warning"><i class="bi bi-hourglass me-1"></i>{{ d.status }}</span>
                         {% else %}
-                            <span class="badge bg-secondary">{{ d.status }}</span>
+                            <span class="badge bg-secondary"><i class="bi bi-dash-circle me-1"></i>{{ d.status }}</span>
                         {% endif %}
                     </td>
                     {% if tab == 'pending' %}
                         <td>
                             <form method="POST" action="{{ url_for('admin.approve_drive', id=d.id) }}" class="d-inline">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button class="btn btn-success btn-sm">Approve</button>
+                                <button class="btn btn-success btn-sm"><i class="bi bi-check-circle me-1"></i>Approve</button>
                             </form>
                             <form method="POST" action="{{ url_for('admin.reject_drive', id=d.id) }}" class="d-inline">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button class="btn btn-danger btn-sm">Reject</button>
+                                <button class="btn btn-danger btn-sm"><i class="bi bi-x-circle me-1"></i>Reject</button>
                             </form>
                         </td>
                     {% else %}
@@ -69,6 +69,6 @@
         </tbody>
     </table>
 {% else %}
-    <div class="alert alert-info">No drives found.</div>
+    <div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>No drives found.</div>
 {% endif %}
 {% endblock %}

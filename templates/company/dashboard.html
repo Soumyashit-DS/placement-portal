@@ -10,9 +10,10 @@
         <div class="col-md-6 text-center">
             <div class="card shadow">
                 <div class="card-body py-5">
-                    <h3 class="text-warning mb-3">Account Pending Approval</h3>
+                    <i class="bi bi-hourglass-split" style="font-size:3rem;color:#c9a84c;"></i>
+                    <h3 class="text-warning mb-3 mt-3">Account Pending Approval</h3>
                     <p class="text-muted">Your registration is under review. Features unlock after admin approval.</p>
-                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-secondary">Logout</a>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-secondary"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
                 </div>
             </div>
         </div>
@@ -22,7 +23,7 @@
     <!-- =============== PROFILE EDIT =============== -->
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h2 class="mb-4">Company Profile</h2>
+            <h2 class="mb-4"><i class="bi bi-building me-2"></i>Company Profile</h2>
             <div class="card shadow">
                 <div class="card-body">
                     <form method="POST">
@@ -65,8 +66,8 @@
 {% elif show_drives is defined and show_drives %}
     <!-- =============== MY DRIVES LIST =============== -->
     <div class="d-flex justify-content-between mb-4">
-        <h2>My Drives</h2>
-        <a href="{{ url_for('company.create_drive') }}" class="btn btn-primary">Create Drive</a>
+        <h2><i class="bi bi-briefcase me-2"></i>My Drives</h2>
+        <a href="{{ url_for('company.create_drive') }}" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>Create Drive</a>
     </div>
 
     {% if drives %}
@@ -93,26 +94,26 @@
                         <td>{{ d.last_apply_date or '-' }}</td>
                         <td>
                             {% if d.status == 'Approved' %}
-                                <span class="badge bg-success">{{ d.status }}</span>
+                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>{{ d.status }}</span>
                             {% elif d.status == 'Pending' %}
-                                <span class="badge bg-warning">{{ d.status }}</span>
+                                <span class="badge bg-warning"><i class="bi bi-hourglass me-1"></i>{{ d.status }}</span>
                             {% else %}
-                                <span class="badge bg-secondary">{{ d.status }}</span>
+                                <span class="badge bg-secondary"><i class="bi bi-dash-circle me-1"></i>{{ d.status }}</span>
                             {% endif %}
                         </td>
                         <td>{{ d.applications.count() }}</td>
                         <td>
-                            <a href="{{ url_for('company.applications', id=d.id) }}" class="btn btn-outline-primary btn-sm">Apps</a>
-                            <a href="{{ url_for('company.edit_drive', id=d.id) }}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                            <a href="{{ url_for('company.applications', id=d.id) }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye me-1"></i>Apps</a>
+                            <a href="{{ url_for('company.edit_drive', id=d.id) }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil me-1"></i>Edit</a>
                             {% if d.status != 'Closed' %}
                                 <form method="POST" action="{{ url_for('company.close_drive', id=d.id) }}" class="d-inline">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                    <button class="btn btn-outline-danger btn-sm">Close</button>
+                                    <button class="btn btn-outline-danger btn-sm"><i class="bi bi-lock me-1"></i>Close</button>
                                 </form>
                             {% endif %}
                             <form method="POST" action="{{ url_for('company.delete_drive', id=d.id) }}" class="d-inline">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button class="btn btn-danger btn-sm">Delete</button>
+                                <button class="btn btn-danger btn-sm"><i class="bi bi-trash me-1"></i>Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -120,18 +121,19 @@
             </tbody>
         </table>
     {% else %}
-        <div class="alert alert-info">No drives yet.</div>
+        <div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>No drives yet.</div>
     {% endif %}
 
 {% else %}
     <!-- =============== DASHBOARD STATS =============== -->
-    <h2 class="mb-4">{{ profile.company_name }} - Dashboard</h2>
+    <h2 class="mb-4"><i class="bi bi-speedometer2 me-2"></i>{{ profile.company_name }} - Dashboard</h2>
 
     <div class="row mb-4">
         <div class="col-md-4 mb-3">
             <div class="card text-white bg-primary shadow">
                 <div class="card-body text-center">
-                    <h5>Drives</h5>
+                    <i class="bi bi-briefcase" style="font-size:2rem;color:#c9a84c;"></i>
+                    <h5 class="mt-2">Drives</h5>
                     <h2>{{ total_drives }}</h2>
                 </div>
             </div>
@@ -139,7 +141,8 @@
         <div class="col-md-4 mb-3">
             <div class="card text-white bg-info shadow">
                 <div class="card-body text-center">
-                    <h5>Applications</h5>
+                    <i class="bi bi-file-earmark-text" style="font-size:2rem;color:#c9a84c;"></i>
+                    <h5 class="mt-2">Applications</h5>
                     <h2>{{ total_apps }}</h2>
                 </div>
             </div>
@@ -147,7 +150,8 @@
         <div class="col-md-4 mb-3">
             <div class="card text-white bg-success shadow">
                 <div class="card-body text-center">
-                    <h5>Selected</h5>
+                    <i class="bi bi-trophy" style="font-size:2rem;color:#c9a84c;"></i>
+                    <h5 class="mt-2">Selected</h5>
                     <h2>{{ selected }}</h2>
                 </div>
             </div>
@@ -155,8 +159,8 @@
     </div>
 
     <div class="d-flex justify-content-between mb-3">
-        <h4>Recent Drives</h4>
-        <a href="{{ url_for('company.create_drive') }}" class="btn btn-primary">Create Drive</a>
+        <h4><i class="bi bi-clock-history me-2"></i>Recent Drives</h4>
+        <a href="{{ url_for('company.create_drive') }}" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>Create Drive</a>
     </div>
 
     {% if drives %}
@@ -176,22 +180,22 @@
                         <td>{{ d.title }}</td>
                         <td>
                             {% if d.status == 'Approved' %}
-                                <span class="badge bg-success">{{ d.status }}</span>
+                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>{{ d.status }}</span>
                             {% elif d.status == 'Pending' %}
-                                <span class="badge bg-warning">{{ d.status }}</span>
+                                <span class="badge bg-warning"><i class="bi bi-hourglass me-1"></i>{{ d.status }}</span>
                             {% else %}
-                                <span class="badge bg-secondary">{{ d.status }}</span>
+                                <span class="badge bg-secondary"><i class="bi bi-dash-circle me-1"></i>{{ d.status }}</span>
                             {% endif %}
                         </td>
                         <td>{{ d.last_apply_date or '-' }}</td>
                         <td>{{ d.applications.count() }}</td>
-                        <td><a href="{{ url_for('company.applications', id=d.id) }}" class="btn btn-outline-primary btn-sm">View Apps</a></td>
+                        <td><a href="{{ url_for('company.applications', id=d.id) }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye me-1"></i>View Apps</a></td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <div class="alert alert-info">No drives yet. <a href="{{ url_for('company.create_drive') }}">Create one</a>.</div>
+        <div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>No drives yet. <a href="{{ url_for('company.create_drive') }}">Create one</a>.</div>
     {% endif %}
 {% endif %}
 

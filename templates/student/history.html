@@ -3,7 +3,7 @@
 {% block title %}Placement History{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Placement History</h2>
+<h2 class="mb-4"><i class="bi bi-clock-history me-2"></i>Placement History</h2>
 
 {% if placements %}
     <table class="table table-striped">
@@ -25,12 +25,12 @@
                     <td>{{ a.placement_drive.location or '-' }}</td>
                     <td>{{ a.placement_drive.salary_package or '-' }}</td>
                     <td>{{ a.applied_at.strftime('%Y-%m-%d') if a.applied_at else '-' }}</td>
-                    <td><span class="badge bg-success">{{ a.status }}</span></td>
+                    <td><span class="badge bg-success"><i class="bi bi-trophy me-1"></i>{{ a.status }}</span></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 {% else %}
-    <div class="alert alert-info">No placements yet. Keep applying!</div>
+    <div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>No placements yet. Keep applying!</div>
 {% endif %}
 {% endblock %}

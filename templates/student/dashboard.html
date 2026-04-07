@@ -6,16 +6,16 @@
 
 {% if browse is defined and browse %}
     <!-- =============== BROWSE DRIVES =============== -->
-    <h2 class="mb-4">Browse Placement Drives</h2>
+    <h2 class="mb-4"><i class="bi bi-briefcase me-2"></i>Browse Placement Drives</h2>
 
     <form method="GET" class="row mb-4">
         <div class="col-md-8">
             <input type="text" name="q" class="form-control" placeholder="Search by title or location" value="{{ q }}">
         </div>
         <div class="col-md-4">
-            <button class="btn btn-primary">Search</button>
+            <button class="btn btn-primary"><i class="bi bi-search me-1"></i>Search</button>
             {% if q %}
-                <a href="{{ url_for('student.browse_drives') }}" class="btn btn-secondary">Clear</a>
+                <a href="{{ url_for('student.browse_drives') }}" class="btn btn-secondary"><i class="bi bi-x-circle me-1"></i>Clear</a>
             {% endif %}
         </div>
     </form>
@@ -35,17 +35,17 @@
                                 </p>
                             {% endif %}
                             <ul class="list-unstyled">
-                                {% if d.location %}<li><strong>Location:</strong> {{ d.location }}</li>{% endif %}
-                                {% if d.salary_package %}<li><strong>Package:</strong> {{ d.salary_package }}</li>{% endif %}
-                                {% if d.eligibility_cgpa > 0 %}<li><strong>Min CGPA:</strong> {{ d.eligibility_cgpa }}</li>{% endif %}
-                                {% if d.last_apply_date %}<li><strong>Deadline:</strong> {{ d.last_apply_date }}</li>{% endif %}
+                                {% if d.location %}<li><i class="bi bi-geo-alt me-1" style="color:#c9a84c;"></i><strong>Location:</strong> {{ d.location }}</li>{% endif %}
+                                {% if d.salary_package %}<li><i class="bi bi-cash-coin me-1" style="color:#c9a84c;"></i><strong>Package:</strong> {{ d.salary_package }}</li>{% endif %}
+                                {% if d.eligibility_cgpa > 0 %}<li><i class="bi bi-award me-1" style="color:#c9a84c;"></i><strong>Min CGPA:</strong> {{ d.eligibility_cgpa }}</li>{% endif %}
+                                {% if d.last_apply_date %}<li><i class="bi bi-calendar-event me-1" style="color:#c9a84c;"></i><strong>Deadline:</strong> {{ d.last_apply_date }}</li>{% endif %}
                             </ul>
                         </div>
                         <div class="card-footer">
                             {% if d.id in applied %}
-                                <span class="badge bg-success">Already Applied</span>
+                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Already Applied</span>
                             {% else %}
-                                <a href="{{ url_for('student.view_drive', id=d.id) }}" class="btn btn-primary btn-sm">View & Apply</a>
+                                <a href="{{ url_for('student.view_drive', id=d.id) }}" class="btn btn-primary btn-sm"><i class="bi bi-eye me-1"></i>View & Apply</a>
                             {% endif %}
                         </div>
                     </div>
@@ -53,7 +53,7 @@
             {% endfor %}
         </div>
     {% else %}
-        <div class="alert alert-info">No drives available.</div>
+        <div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>No drives available.</div>
     {% endif %}
 
 {% elif view_drive is defined %}
@@ -70,26 +70,26 @@
                     {% endif %}
                     <div class="row">
                         <div class="col-md-6">
-                            {% if view_drive.location %}<p><strong>Location:</strong> {{ view_drive.location }}</p>{% endif %}
-                            {% if view_drive.salary_package %}<p><strong>Package:</strong> {{ view_drive.salary_package }}</p>{% endif %}
-                            {% if view_drive.eligibility_cgpa > 0 %}<p><strong>Min CGPA:</strong> {{ view_drive.eligibility_cgpa }}</p>{% endif %}
+                            {% if view_drive.location %}<p><i class="bi bi-geo-alt me-1" style="color:#c9a84c;"></i><strong>Location:</strong> {{ view_drive.location }}</p>{% endif %}
+                            {% if view_drive.salary_package %}<p><i class="bi bi-cash-coin me-1" style="color:#c9a84c;"></i><strong>Package:</strong> {{ view_drive.salary_package }}</p>{% endif %}
+                            {% if view_drive.eligibility_cgpa > 0 %}<p><i class="bi bi-award me-1" style="color:#c9a84c;"></i><strong>Min CGPA:</strong> {{ view_drive.eligibility_cgpa }}</p>{% endif %}
                         </div>
                         <div class="col-md-6">
-                            {% if view_drive.eligible_departments %}<p><strong>Departments:</strong> {{ view_drive.eligible_departments }}</p>{% endif %}
-                            {% if view_drive.drive_date %}<p><strong>Drive Date:</strong> {{ view_drive.drive_date }}</p>{% endif %}
-                            {% if view_drive.last_apply_date %}<p><strong>Deadline:</strong> {{ view_drive.last_apply_date }}</p>{% endif %}
+                            {% if view_drive.eligible_departments %}<p><i class="bi bi-diagram-3 me-1" style="color:#c9a84c;"></i><strong>Departments:</strong> {{ view_drive.eligible_departments }}</p>{% endif %}
+                            {% if view_drive.drive_date %}<p><i class="bi bi-calendar-check me-1" style="color:#c9a84c;"></i><strong>Drive Date:</strong> {{ view_drive.drive_date }}</p>{% endif %}
+                            {% if view_drive.last_apply_date %}<p><i class="bi bi-calendar-event me-1" style="color:#c9a84c;"></i><strong>Deadline:</strong> {{ view_drive.last_apply_date }}</p>{% endif %}
                         </div>
                     </div>
                     <hr>
                     {% if already_applied %}
-                        <div class="alert alert-success">You have already applied.</div>
+                        <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>You have already applied.</div>
                     {% else %}
                         <form method="POST" action="{{ url_for('student.apply_drive', id=view_drive.id) }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button class="btn btn-primary btn-lg">Apply Now</button>
+                            <button class="btn btn-primary btn-lg"><i class="bi bi-send me-1"></i>Apply Now</button>
                         </form>
                     {% endif %}
-                    <a href="{{ url_for('student.browse_drives') }}" class="btn btn-secondary mt-2">Back</a>
+                    <a href="{{ url_for('student.browse_drives') }}" class="btn btn-secondary mt-2"><i class="bi bi-arrow-left me-1"></i>Back</a>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
 
 {% elif my_apps is defined %}
     <!-- =============== MY APPLICATIONS =============== -->
-    <h2 class="mb-4">My Applications</h2>
+    <h2 class="mb-4"><i class="bi bi-file-earmark-text me-2"></i>My Applications</h2>
 
     {% if my_apps %}
         <table class="table table-striped">
@@ -121,13 +121,13 @@
                         <td>{{ a.applied_at.strftime('%Y-%m-%d') if a.applied_at else '-' }}</td>
                         <td>
                             {% if a.status == 'Selected' %}
-                                <span class="badge bg-success">{{ a.status }}</span>
+                                <span class="badge bg-success"><i class="bi bi-trophy me-1"></i>{{ a.status }}</span>
                             {% elif a.status == 'Rejected' %}
-                                <span class="badge bg-danger">{{ a.status }}</span>
+                                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>{{ a.status }}</span>
                             {% elif a.status == 'Shortlisted' %}
-                                <span class="badge bg-info">{{ a.status }}</span>
+                                <span class="badge bg-info"><i class="bi bi-star me-1"></i>{{ a.status }}</span>
                             {% else %}
-                                <span class="badge bg-secondary">{{ a.status }}</span>
+                                <span class="badge bg-secondary"><i class="bi bi-hourglass me-1"></i>{{ a.status }}</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -136,19 +136,20 @@
         </table>
     {% else %}
         <div class="alert alert-info">
-            No applications. <a href="{{ url_for('student.browse_drives') }}">Browse drives</a>.
+            <i class="bi bi-info-circle me-2"></i>No applications. <a href="{{ url_for('student.browse_drives') }}">Browse drives</a>.
         </div>
     {% endif %}
 
 {% else %}
     <!-- =============== DASHBOARD =============== -->
-    <h2 class="mb-4">Welcome, {{ profile.full_name }}</h2>
+    <h2 class="mb-4"><i class="bi bi-speedometer2 me-2"></i>Welcome, {{ profile.full_name }}</h2>
 
     <div class="row mb-4">
         <div class="col-md-3 mb-3">
             <div class="card text-white bg-primary shadow">
                 <div class="card-body text-center">
-                    <h5>Applications</h5>
+                    <i class="bi bi-file-earmark-text" style="font-size:2rem;color:#c9a84c;"></i>
+                    <h5 class="mt-2">Applications</h5>
                     <h2>{{ total }}</h2>
                 </div>
             </div>
@@ -156,7 +157,8 @@
         <div class="col-md-3 mb-3">
             <div class="card text-white bg-warning shadow">
                 <div class="card-body text-center">
-                    <h5>Pending</h5>
+                    <i class="bi bi-hourglass-split" style="font-size:2rem;color:#c9a84c;"></i>
+                    <h5 class="mt-2">Pending</h5>
                     <h2>{{ pending }}</h2>
                 </div>
             </div>
@@ -164,7 +166,8 @@
         <div class="col-md-3 mb-3">
             <div class="card text-white bg-success shadow">
                 <div class="card-body text-center">
-                    <h5>Selected</h5>
+                    <i class="bi bi-trophy" style="font-size:2rem;color:#c9a84c;"></i>
+                    <h5 class="mt-2">Selected</h5>
                     <h2>{{ selected }}</h2>
                 </div>
             </div>
@@ -172,7 +175,8 @@
         <div class="col-md-3 mb-3">
             <div class="card text-white bg-danger shadow">
                 <div class="card-body text-center">
-                    <h5>Rejected</h5>
+                    <i class="bi bi-x-circle" style="font-size:2rem;color:#c9a84c;"></i>
+                    <h5 class="mt-2">Rejected</h5>
                     <h2>{{ rejected }}</h2>
                 </div>
             </div>
@@ -181,7 +185,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h4>Recent Applications</h4>
+            <h4><i class="bi bi-clock-history me-2"></i>Recent Applications</h4>
             {% if recent_apps %}
                 <table class="table table-striped">
                     <thead>
@@ -198,13 +202,13 @@
                                 <td>{{ a.placement_drive.company_profile.company_name }}</td>
                                 <td>
                                     {% if a.status == 'Selected' %}
-                                        <span class="badge bg-success">{{ a.status }}</span>
+                                        <span class="badge bg-success"><i class="bi bi-trophy me-1"></i>{{ a.status }}</span>
                                     {% elif a.status == 'Rejected' %}
-                                        <span class="badge bg-danger">{{ a.status }}</span>
+                                        <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>{{ a.status }}</span>
                                     {% elif a.status == 'Shortlisted' %}
-                                        <span class="badge bg-info">{{ a.status }}</span>
+                                        <span class="badge bg-info"><i class="bi bi-star me-1"></i>{{ a.status }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ a.status }}</span>
+                                        <span class="badge bg-secondary"><i class="bi bi-hourglass me-1"></i>{{ a.status }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -213,13 +217,13 @@
                 </table>
             {% else %}
                 <p class="text-muted">
-                    No applications. <a href="{{ url_for('student.browse_drives') }}">Browse drives</a>
+                    <i class="bi bi-info-circle me-1"></i>No applications. <a href="{{ url_for('student.browse_drives') }}">Browse drives</a>
                 </p>
             {% endif %}
         </div>
 
         <div class="col-md-6">
-            <h4>Latest Drives</h4>
+            <h4><i class="bi bi-briefcase me-2"></i>Latest Drives</h4>
             {% if drives %}
                 <table class="table table-striped">
                     <thead>
@@ -240,7 +244,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <p class="text-muted">No drives available.</p>
+                <p class="text-muted"><i class="bi bi-info-circle me-1"></i>No drives available.</p>
             {% endif %}
         </div>
     </div>

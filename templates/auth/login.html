@@ -7,7 +7,7 @@
     <div class="col-md-5">
         <div class="card shadow">
             <div class="card-body">
-                <h3 class="text-center mb-4">Login</h3>
+                <h3 class="text-center mb-4"><i class="bi bi-box-arrow-in-right me-2"></i>Login</h3>
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
@@ -22,8 +22,8 @@
                 </form>
                 <hr>
                 <p class="text-center mb-0">
-                    <a href="{{ url_for('auth.register') }}">Register as Student</a> |
-                    <a href="{{ url_for('auth.register_company') }}">Register as Company</a>
+                    <a href="{{ url_for('auth.register') }}"><i class="bi bi-person-badge me-1"></i>Register as Student</a> |
+                    <a href="{{ url_for('auth.register_company') }}"><i class="bi bi-building me-1"></i>Register as Company</a>
                 </p>
             </div>
         </div>

@@ -3,14 +3,14 @@
 {% block title %}Companies{% endblock %}
 
 {% block content %}
-<h2 class="mb-3">Companies</h2>
+<h2 class="mb-3"><i class="bi bi-building me-2"></i>Companies</h2>
 
 <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
-        <a class="nav-link {% if tab == 'all' %}active{% endif %}" href="{{ url_for('admin.companies', tab='all') }}">All Companies</a>
+        <a class="nav-link {% if tab == 'all' %}active{% endif %}" href="{{ url_for('admin.companies', tab='all') }}"><i class="bi bi-grid-fill me-1"></i>All Companies</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {% if tab == 'pending' %}active{% endif %}" href="{{ url_for('admin.companies', tab='pending') }}">Pending Approval</a>
+        <a class="nav-link {% if tab == 'pending' %}active{% endif %}" href="{{ url_for('admin.companies', tab='pending') }}"><i class="bi bi-hourglass-split me-1"></i>Pending Approval</a>
     </li>
 </ul>
 
@@ -21,9 +21,9 @@
             <input type="text" name="q" class="form-control" placeholder="Search company name" value="{{ query }}">
         </div>
         <div class="col-md-4">
-            <button class="btn btn-primary">Search</button>
+            <button class="btn btn-primary"><i class="bi bi-search me-1"></i>Search</button>
             {% if query %}
-                <a href="{{ url_for('admin.companies') }}" class="btn btn-secondary">Clear</a>
+                <a href="{{ url_for('admin.companies') }}" class="btn btn-secondary"><i class="bi bi-x-circle me-1"></i>Clear</a>
             {% endif %}
         </div>
     </form>
@@ -50,25 +50,25 @@
                         <td>{{ c.contact_person or '-' }}</td>
                         <td>
                             {% if c.user.is_approved %}
-                                <span class="badge bg-success">Approved</span>
+                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Approved</span>
                             {% else %}
-                                <span class="badge bg-warning">Pending</span>
+                                <span class="badge bg-warning"><i class="bi bi-hourglass me-1"></i>Pending</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if c.user.is_active %}
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success"><i class="bi bi-circle-fill me-1"></i>Active</span>
                             {% else %}
-                                <span class="badge bg-danger">Blacklisted</span>
+                                <span class="badge bg-danger"><i class="bi bi-slash-circle me-1"></i>Blacklisted</span>
                             {% endif %}
                         </td>
                         <td>
                             <form method="POST" action="{{ url_for('admin.blacklist_user', id=c.user.id) }}" class="d-inline">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 {% if c.user.is_active %}
-                                    <button class="btn btn-warning btn-sm">Deactivate</button>
+                                    <button class="btn btn-warning btn-sm"><i class="bi bi-slash-circle me-1"></i>Deactivate</button>
                                 {% else %}
-                                    <button class="btn btn-success btn-sm">Activate</button>
+                                    <button class="btn btn-success btn-sm"><i class="bi bi-check-circle me-1"></i>Activate</button>
                                 {% endif %}
                             </form>
                         </td>
@@ -77,7 +77,7 @@
             </tbody>
         </table>
     {% else %}
-        <div class="alert alert-info">No companies found.</div>
+        <div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>No companies found.</div>
     {% endif %}
 
 {% else %}
@@ -104,11 +104,11 @@
                         <td>
                             <form method="POST" action="{{ url_for('admin.approve_company', id=u.id) }}" class="d-inline">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button class="btn btn-success btn-sm">Approve</button>
+                                <button class="btn btn-success btn-sm"><i class="bi bi-check-circle me-1"></i>Approve</button>
                             </form>
                             <form method="POST" action="{{ url_for('admin.reject_company', id=u.id) }}" class="d-inline">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button class="btn btn-danger btn-sm">Reject</button>
+                                <button class="btn btn-danger btn-sm"><i class="bi bi-x-circle me-1"></i>Reject</button>
                             </form>
                         </td>
                     </tr>
@@ -116,7 +116,7 @@
             </tbody>
         </table>
     {% else %}
-        <div class="alert alert-info">No pending companies.</div>
+        <div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>No pending companies.</div>
     {% endif %}
 {% endif %}
 {% endblock %}

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="row">
     <div class="col-md-7">
-        <h2 class="mb-4">My Profile</h2>
+        <h2 class="mb-4"><i class="bi bi-person-badge me-2"></i>My Profile</h2>
         <div class="card shadow">
             <div class="card-body">
                 <form method="POST">
@@ -41,13 +41,13 @@
     </div>
 
     <div class="col-md-5">
-        <h2 class="mb-4">Resume</h2>
+        <h2 class="mb-4"><i class="bi bi-file-earmark-person me-2"></i>Resume</h2>
         <div class="card shadow">
             <div class="card-body">
                 {% if sp.resume_filename %}
-                    <p>Current: <a href="{{ url_for('static', filename='uploads/' + sp.resume_filename) }}" target="_blank">{{ sp.resume_filename }}</a></p>
+                    <p><i class="bi bi-file-earmark-pdf me-1" style="color:#c9a84c;"></i>Current: <a href="{{ url_for('static', filename='uploads/' + sp.resume_filename) }}" target="_blank">{{ sp.resume_filename }}</a></p>
                 {% else %}
-                    <p class="text-muted">No resume uploaded.</p>
+                    <p class="text-muted"><i class="bi bi-file-earmark me-1"></i>No resume uploaded.</p>
                 {% endif %}
                 <hr>
                 <form method="POST" action="{{ url_for('student.upload_resume') }}" enctype="multipart/form-data">
@@ -63,8 +63,8 @@
 
         <div class="card shadow mt-3">
             <div class="card-body">
-                <p><strong>Roll Number:</strong> {{ sp.roll_number }}</p>
-                <p><strong>Email:</strong> {{ current_user.email }}</p>
+                <p><i class="bi bi-hash me-1" style="color:#c9a84c;"></i><strong>Roll Number:</strong> {{ sp.roll_number }}</p>
+                <p><i class="bi bi-envelope me-1" style="color:#c9a84c;"></i><strong>Email:</strong> {{ current_user.email }}</p>
             </div>
         </div>
     </div>

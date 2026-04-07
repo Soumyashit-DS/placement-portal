@@ -7,7 +7,7 @@
     <div class="col-md-6">
         <div class="card shadow">
             <div class="card-body">
-                <h3 class="text-center mb-4">{{ type|title }} Registration</h3>
+                <h3 class="text-center mb-4"><i class="bi bi-person-plus me-2"></i>{{ type|title }} Registration</h3>
                 <form method="POST">
                     {{ form.hidden_tag() }}
 
@@ -110,7 +110,7 @@
                     {{ form.submit(class="btn btn-primary w-100") }}
                 </form>
                 <hr>
-                <p class="text-center">Already registered? <a href="{{ url_for('auth.login') }}">Login</a></p>
+                <p class="text-center"><i class="bi bi-box-arrow-in-right me-1"></i>Already registered? <a href="{{ url_for('auth.login') }}">Login</a></p>
             </div>
         </div>
     </div>
