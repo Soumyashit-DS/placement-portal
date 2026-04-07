@@ -121,7 +121,7 @@ def create_drive():
 @login_required
 @company_required
 def edit_drive(id):
-    drive = PlacementDrive.query.get_or_404(id)
+    drive = db.get_or_404(PlacementDrive, id)
     if drive.company_id != current_user.company_profile.id:
         abort(403)
     form = DriveForm(obj=drive)
@@ -134,8 +134,9 @@ def edit_drive(id):
         drive.eligible_departments = form.eligible_departments.data
         drive.drive_date = form.drive_date.data
         drive.last_apply_date = form.last_apply_date.data
+        drive.status = 'Pending'  # reset to re-trigger admin approval after edits
         db.session.commit()
-        flash('Drive updated.', 'success')
+        flash('Drive updated. Awaiting re-approval.', 'success')
         return redirect(url_for('company.my_drives'))
     return render_template('company/edit_drive.html', form=form, drive=drive)
 
@@ -144,7 +145,7 @@ def edit_drive(id):
 @login_required
 @company_required
 def close_drive(id):
-    drive = PlacementDrive.query.get_or_404(id)
+    drive = db.get_or_404(PlacementDrive, id)
     if drive.company_id != current_user.company_profile.id:
         abort(403)
     drive.status = 'Closed'
@@ -157,7 +158,7 @@ def close_drive(id):
 @login_required
 @company_required
 def delete_drive(id):
-    drive = PlacementDrive.query.get_or_404(id)
+    drive = db.get_or_404(PlacementDrive, id)
     if drive.company_id != current_user.company_profile.id:
         abort(403)
     db.session.delete(drive)
@@ -170,7 +171,7 @@ def delete_drive(id):
 @login_required
 @company_required
 def applications(id):
-    drive = PlacementDrive.query.get_or_404(id)
+    drive = db.get_or_404(PlacementDrive, id)
     if drive.company_id != current_user.company_profile.id:
         abort(403)
     return render_template('company/applications.html', drive=drive, apps=drive.applications.all())
@@ -182,8 +183,8 @@ def applications(id):
 def update_application(id, status):
     if status not in ('Shortlisted', 'Selected', 'Rejected'):
         abort(400)
-    application = Application.query.get_or_404(id)
-    drive = PlacementDrive.query.get_or_404(application.drive_id)
+    application = db.get_or_404(Application, id)
+    drive = db.get_or_404(PlacementDrive, application.drive_id)
     if drive.company_id != current_user.company_profile.id:
         abort(403)
     application.status = status

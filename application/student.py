@@ -2,6 +2,7 @@
 
 import os
 import time
+from datetime import date
 from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, abort
 from flask_login import login_required, current_user
@@ -116,7 +117,7 @@ def browse_drives():
 @login_required
 @student_required
 def view_drive(id):
-    drive = PlacementDrive.query.get_or_404(id)
+    drive = db.get_or_404(PlacementDrive, id)
     if drive.status != 'Approved':
         abort(404)
     already = Application.query.filter_by(student_id=current_user.student_profile.id, drive_id=id).first() is not None
@@ -127,14 +128,36 @@ def view_drive(id):
 @login_required
 @student_required
 def apply_drive(id):
-    drive = PlacementDrive.query.get_or_404(id)
+    drive = db.get_or_404(PlacementDrive, id)
+    sp = current_user.student_profile
+
     if drive.status != 'Approved':
         flash('Not accepting applications.', 'danger')
         return redirect(url_for('student.browse_drives'))
-    if Application.query.filter_by(student_id=current_user.student_profile.id, drive_id=id).first():
+
+    if Application.query.filter_by(student_id=sp.id, drive_id=id).first():
         flash('Already applied.', 'warning')
         return redirect(url_for('student.browse_drives'))
-    db.session.add(Application(student_id=current_user.student_profile.id, drive_id=id, status='Applied'))
+
+    # Deadline check
+    if drive.last_apply_date and date.today() > drive.last_apply_date:
+        flash('Application deadline has passed.', 'danger')
+        return redirect(url_for('student.browse_drives'))
+
+    # CGPA eligibility check
+    student_cgpa = sp.cgpa or 0.0
+    if student_cgpa < (drive.eligibility_cgpa or 0.0):
+        flash(f'You need a minimum CGPA of {drive.eligibility_cgpa} to apply.', 'danger')
+        return redirect(url_for('student.browse_drives'))
+
+    # Department eligibility check
+    if drive.eligible_departments:
+        allowed = [d.strip().lower() for d in drive.eligible_departments.split(',')]
+        if sp.department.strip().lower() not in allowed:
+            flash('Your department is not eligible for this drive.', 'danger')
+            return redirect(url_for('student.browse_drives'))
+
+    db.session.add(Application(student_id=sp.id, drive_id=id, status='Applied'))
     db.session.commit()
     flash('Application submitted!', 'success')
     return redirect(url_for('student.my_applications'))

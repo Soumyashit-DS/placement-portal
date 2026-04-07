@@ -7,14 +7,15 @@ from models import db, User
 # ─── CREATING APP ──────────────────────────────────────────────────────
 
 app = Flask(__name__, instance_relative_config=True)
-app.config['SECRET_KEY'] = 'placement-portal-secret-key'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'placement-portal-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'placement.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2 MB
 
-# Ensure instance folder exists
+# Ensure instance and upload folders exist
 os.makedirs(app.instance_path, exist_ok=True)
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # ─── EXTENSIONS ──────────────────────────────────────────────────────
 
@@ -27,7 +28,7 @@ csrf = CSRFProtect(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))
 
 
 # ─── REGISTER ROUTES ────────────────────────────────────────────────
