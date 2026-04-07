@@ -382,6 +382,8 @@ footer p,
 footer .text-muted {
   color: #8a97aa !important;
   margin: 0;
+}
+
 /* ── MISC UTILITIES ──────────────────────────────────────── */
 .text-muted  { color: #8a97aa !important; }
 .text-warning{ color: #c9a84c !important; }
