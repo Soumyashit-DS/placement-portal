@@ -87,13 +87,24 @@ def upload_resume():
         filename = secure_filename(f"{sp.id}_{int(time.time())}.pdf")
         filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        file.save(filepath)
-        if sp.resume_filename:
-            old = os.path.join(current_app.config['UPLOAD_FOLDER'], sp.resume_filename)
-            if os.path.exists(old):
-                os.remove(old)
+        old_filename = sp.resume_filename
+        try:
+            file.save(filepath)
+        except OSError:
+            flash('Failed to save resume. Please try again.', 'danger')
+            return redirect(url_for('student.profile'))
         sp.resume_filename = filename
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            os.remove(filepath)
+            flash('Failed to update profile. Please try again.', 'danger')
+            return redirect(url_for('student.profile'))
+        if old_filename:
+            old_path = os.path.join(current_app.config['UPLOAD_FOLDER'], old_filename)
+            if os.path.exists(old_path):
+                os.remove(old_path)
         flash('Resume uploaded.', 'success')
     else:
         flash('Only PDF files allowed.', 'danger')
