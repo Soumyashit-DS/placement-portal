@@ -46,7 +46,7 @@ class StudentProfile(db.Model):
     graduation_year = db.Column(db.Integer, nullable=True)
 
     user = db.relationship('User', back_populates='student_profile')
-    applications = db.relationship('Application', back_populates='student_profile', lazy='dynamic')
+    applications = db.relationship('Application', back_populates='student_profile', lazy='dynamic', cascade='all, delete-orphan')
 
 
 class CompanyProfile(db.Model):
@@ -61,7 +61,7 @@ class CompanyProfile(db.Model):
     contact_phone = db.Column(db.String(15), nullable=True)
 
     user = db.relationship('User', back_populates='company_profile')
-    drives = db.relationship('PlacementDrive', back_populates='company_profile', lazy='dynamic')
+    drives = db.relationship('PlacementDrive', back_populates='company_profile', lazy='dynamic', cascade='all, delete-orphan')
 
 
 class PlacementDrive(db.Model):
@@ -80,7 +80,7 @@ class PlacementDrive(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     company_profile = db.relationship('CompanyProfile', back_populates='drives')
-    applications = db.relationship('Application', back_populates='placement_drive', lazy='dynamic')
+    applications = db.relationship('Application', back_populates='placement_drive', lazy='dynamic', cascade='all, delete-orphan')
 
 
 class Application(db.Model):
