@@ -75,4 +75,78 @@
         </div>
     </div>
 </div>
+
+<!-- ── Application Outcome Rates ─────────────────────────────────── -->
+<div class="card shadow mt-4">
+    <div class="card-header">
+        <i class="bi bi-pie-chart me-2"></i><strong>Application Outcome Rates</strong>
+    </div>
+    <div class="card-body">
+
+        <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+                <span><i class="bi bi-trophy me-1 text-success"></i>Placement Rate</span>
+                <span class="fw-semibold">{{ placement_rate }}%</span>
+            </div>
+            <div class="progress" style="height:1.1rem;">
+                <div class="progress-bar bg-success" role="progressbar"
+                     style="width:{{ placement_rate }}%;"
+                     aria-valuenow="{{ placement_rate }}" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+                <span><i class="bi bi-star me-1 text-info"></i>Shortlist Rate</span>
+                <span class="fw-semibold">{{ shortlist_rate }}%</span>
+            </div>
+            <div class="progress" style="height:1.1rem;">
+                <div class="progress-bar bg-info" role="progressbar"
+                     style="width:{{ shortlist_rate }}%;"
+                     aria-valuenow="{{ shortlist_rate }}" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-1">
+            <div class="d-flex justify-content-between mb-1">
+                <span><i class="bi bi-x-circle me-1 text-danger"></i>Rejection Rate</span>
+                <span class="fw-semibold">{{ rejection_rate }}%</span>
+            </div>
+            <div class="progress" style="height:1.1rem;">
+                <div class="progress-bar bg-danger" role="progressbar"
+                     style="width:{{ rejection_rate }}%;"
+                     aria-valuenow="{{ rejection_rate }}" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ── Applications per Company ───────────────────────────────────── -->
+<div class="card shadow mt-4">
+    <div class="card-header">
+        <i class="bi bi-bar-chart-line me-2"></i><strong>Applications per Company</strong>
+    </div>
+    <div class="card-body">
+        {% if apps_per_company %}
+            {% for c in apps_per_company %}
+            {% set bar_pct = ((c.count / max_apps) * 100) | round | int %}
+            <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <span>{{ c.name }}</span>
+                    <span class="fw-semibold text-muted">{{ c.count }}</span>
+                </div>
+                <div style="background:#e9ecef;border-radius:.375rem;height:1.1rem;overflow:hidden;">
+                    <div style="width:{{ bar_pct }}%;height:100%;background:#0d6efd;border-radius:.375rem;"></div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted mb-0"><i class="bi bi-info-circle me-1"></i>No applications yet.</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

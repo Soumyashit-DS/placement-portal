@@ -48,13 +48,20 @@ class ResumeForm(FlaskForm):
 @student_required
 def dashboard():
     p = current_user.student_profile
+    profile_fields = [p.full_name, p.department, p.cgpa, p.phone_no, p.resume_filename, p.graduation_year]
+    filled = sum(1 for f in profile_fields if f is not None and str(f).strip() != '')
+    total_fields = len(profile_fields)
+    profile_pct = round(filled / total_fields * 100)
     return render_template('student/dashboard.html', profile=p,
         total=p.applications.count(),
         selected=p.applications.filter_by(status='Selected').count(),
         pending=p.applications.filter_by(status='Applied').count(),
         rejected=p.applications.filter_by(status='Rejected').count(),
         drives=PlacementDrive.query.filter_by(status='Approved').order_by(PlacementDrive.created_at.desc()).limit(5).all(),
-        recent_apps=p.applications.order_by(Application.applied_at.desc()).limit(5).all())
+        recent_apps=p.applications.order_by(Application.applied_at.desc()).limit(5).all(),
+        profile_filled=filled,
+        profile_total=total_fields,
+        profile_pct=profile_pct)
 
 
 @student_bp.route('/profile', methods=['GET', 'POST'])
@@ -121,7 +128,17 @@ def browse_drives():
         query = query.filter((PlacementDrive.title.ilike(f'%{q}%')) | (PlacementDrive.location.ilike(f'%{q}%')))
     drives = query.order_by(PlacementDrive.created_at.desc()).all()
     applied = {a.drive_id for a in Application.query.filter_by(student_id=current_user.student_profile.id).all()}
-    return render_template('student/dashboard.html', browse=True, drives=drives, q=q, applied=applied, profile=current_user.student_profile)
+    profile = current_user.student_profile
+    eligible = {}
+    for d in drives:
+        cgpa_ok = profile.cgpa is not None and profile.cgpa >= (d.eligibility_cgpa or 0)
+        if d.eligible_departments:
+            dept_list = [dep.strip() for dep in d.eligible_departments.split(',')]
+            dept_ok = profile.department in dept_list
+        else:
+            dept_ok = True
+        eligible[d.id] = cgpa_ok and dept_ok
+    return render_template('student/dashboard.html', browse=True, drives=drives, q=q, applied=applied, profile=profile, eligible=eligible)
 
 
 @student_bp.route('/drives/<int:id>')

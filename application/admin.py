@@ -22,6 +22,7 @@ def admin_required(f):
 @login_required
 @admin_required
 def dashboard():
+    from sqlalchemy import func
     stats = {
         'total_students': StudentProfile.query.count(),
         'total_companies': CompanyProfile.query.count(),
@@ -31,7 +32,29 @@ def dashboard():
         'total_applications': Application.query.count(),
         'selected_students': Application.query.filter_by(status='Selected').count(),
     }
-    return render_template('admin/dashboard.html', stats=stats)
+
+    # Applications per company for bar chart
+    rows = (
+        db.session.query(CompanyProfile.company_name, func.count(Application.id).label('cnt'))
+        .join(PlacementDrive, PlacementDrive.company_id == CompanyProfile.id)
+        .join(Application, Application.drive_id == PlacementDrive.id)
+        .group_by(CompanyProfile.company_name)
+        .order_by(func.count(Application.id).desc())
+        .all()
+    )
+    apps_per_company = [{'name': r.company_name, 'count': r.cnt} for r in rows]
+    max_apps = apps_per_company[0]['count'] if apps_per_company else 1
+
+    total_apps = stats['total_applications'] or 1  # avoid division by zero
+    placement_rate  = round(Application.query.filter_by(status='Selected').count()   / total_apps * 100, 1)
+    shortlist_rate  = round(Application.query.filter_by(status='Shortlisted').count() / total_apps * 100, 1)
+    rejection_rate  = round(Application.query.filter_by(status='Rejected').count()   / total_apps * 100, 1)
+
+    return render_template('admin/dashboard.html', stats=stats,
+        apps_per_company=apps_per_company, max_apps=max_apps,
+        placement_rate=placement_rate,
+        shortlist_rate=shortlist_rate,
+        rejection_rate=rejection_rate)
 
 
 # ─── COMPANIES (approve/reject/manage) ──────────────────────────────
@@ -154,3 +177,98 @@ def reject_drive(id):
 def applications():
     items = Application.query.order_by(Application.applied_at.desc()).all()
     return render_template('admin/applications.html', items=items)
+
+
+# ─── STATS ──────────────────────────────────────────────────────────
+
+@admin_bp.route('/stats')
+@login_required
+@admin_required
+def stats():
+    total_students = StudentProfile.query.count()
+
+    placed_ids = db.session.query(Application.student_id).filter_by(status='Selected').distinct().all()
+    total_placed = len(placed_ids)
+    placement_pct = round((total_placed / total_students * 100), 1) if total_students else 0
+
+    # Top 5 companies by selection count
+    from sqlalchemy import func
+    top_companies_raw = (
+        db.session.query(CompanyProfile.company_name, func.count(Application.id).label('cnt'))
+        .join(PlacementDrive, PlacementDrive.company_id == CompanyProfile.id)
+        .join(Application, Application.drive_id == PlacementDrive.id)
+        .filter(Application.status == 'Selected')
+        .group_by(CompanyProfile.company_name)
+        .order_by(func.count(Application.id).desc())
+        .limit(5)
+        .all()
+    )
+    top_companies = [{'name': r[0], 'count': r[1]} for r in top_companies_raw]
+    max_company_count = top_companies[0]['count'] if top_companies else 1
+
+    # Department-wise placement count
+    dept_raw = (
+        db.session.query(StudentProfile.department, func.count(Application.id).label('cnt'))
+        .join(Application, Application.student_id == StudentProfile.id)
+        .filter(Application.status == 'Selected')
+        .group_by(StudentProfile.department)
+        .order_by(func.count(Application.id).desc())
+        .all()
+    )
+    dept_stats = [{'dept': r[0], 'count': r[1]} for r in dept_raw]
+    max_dept_count = dept_stats[0]['count'] if dept_stats else 1
+
+    return render_template('admin/stats.html',
+        total_students=total_students,
+        total_placed=total_placed,
+        placement_pct=placement_pct,
+        top_companies=top_companies,
+        max_company_count=max_company_count,
+        dept_stats=dept_stats,
+        max_dept_count=max_dept_count,
+    )
+
+
+# ─── SUMMARY ────────────────────────────────────────────────────────
+
+@admin_bp.route('/summary')
+@login_required
+@admin_required
+def summary():
+    from sqlalchemy import func
+
+    # All approved companies with aggregated counts in one query
+    rows = (
+        db.session.query(
+            CompanyProfile.company_name,
+            func.count(PlacementDrive.id.distinct()).label('total_drives'),
+            func.count(Application.id).label('total_applicants'),
+            func.sum(db.case((Application.status == 'Selected', 1), else_=0)).label('total_selected'),
+        )
+        .join(PlacementDrive, PlacementDrive.company_id == CompanyProfile.id, isouter=True)
+        .join(Application, Application.drive_id == PlacementDrive.id, isouter=True)
+        .join(User, User.id == CompanyProfile.user_id)
+        .filter(User.is_approved == True)
+        .group_by(CompanyProfile.id, CompanyProfile.company_name)
+        .order_by(func.sum(db.case((Application.status == 'Selected', 1), else_=0)).desc())
+        .all()
+    )
+
+    companies = [
+        {
+            'name': r.company_name,
+            'drives': r.total_drives or 0,
+            'applicants': r.total_applicants or 0,
+            'selected': int(r.total_selected or 0),
+        }
+        for r in rows
+    ]
+
+    max_applicants = max((c['applicants'] for c in companies), default=1) or 1
+    max_selected  = max((c['selected']   for c in companies), default=1) or 1
+
+    return render_template('admin/summary.html',
+        companies=companies,
+        max_applicants=max_applicants,
+        max_selected=max_selected,
+    )
