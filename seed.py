@@ -143,7 +143,7 @@ with app.app_context():
     print('  Company (pending approval):')
     print('    globalfin / company123  ->  GlobalFin Services')
     print()
-    print('  Students (student1–7 / student123):')
+    print('  Students (student1-7 / student123):')
     print('    student1  Alice Johnson  CSE  8.5')
     print('    student2  Bob Williams   CSE  7.8')
     print('    student3  Carol Davis    ECE  9.1')

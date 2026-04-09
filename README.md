@@ -157,4 +157,8 @@ The browse page shows an **Eligible** or **Not Eligible** badge on each drive ca
 - Stored as `{student_id}_{unix_timestamp}.pdf` in `static/uploads/`
 - Old file is only deleted after a successful database commit (prevents data loss on failure)
 
+---
 
+## License
+
+MIT
